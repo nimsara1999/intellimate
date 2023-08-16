@@ -25,7 +25,7 @@ This project aims to enhance the capabilities of a small robot with legs control
 
 There are 6 main steps in the development process.
 1. Develop the main hardware structure.
-2. Develop robot movements and eye reactions. 
+2. Develop robot movements, eye reactions and how use tof sensors. 
 3. Research and develop image recognition on locally.
 4. Research and develop voice recognition.
 5. Combine image and voice recognition on esp32-s3-eye and test.
@@ -69,27 +69,35 @@ There are 6 main steps in the development process.
    
  - head- I design head part for assemble power distribution circuit and display.    
  
- - Body - In this part include development board, two servo    motors to
+ - Body - In this part include development board, two servo motors to
    control legs, speaker, tof sensors and batteries.
    
  - legs- There are two legs. I include servo motors in this leg for foot control.
  
  - foot- In the foot, there are two time of flight sensors in each feet.
 
-## 2. Develop robot movements and eye reactions.
+## 2.  Develop robot movements, eye reactions and how   		use tof sensors. 
+There is a library which is match to intellimate robot movements. So we can directly use that library for develop robot movements further more.
 
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Use two 128*64 i2c oled displays to design eye reactions. When we use two oled displays, both of have same hardware address. So we need to change hardware address by changing backside resistor. Finally can controll two oled displays using one i2c line.
+
+Instead of the camera, use time of flight sensors to get some idea of the environment. We use four [time of flight sensors](https://www.st.com/en/imaging-and-photonics-solutions/time-of-flight-sensors.html) to detect objects around the robot and four tof sensors (two per foot each) to detect the edges of the living table. 
+
 
 ## 3. Research and develop image recognition on locally.
-There is a version of tensorflow which is called tensorflow lite. TensorFlow Lite is a set of tools that enables on-device machine learning by helping developers run their models on mobile, embedded, and edge devices.
+There is a version of tensorflow which is called tensorflow lite. TensorFlow Lite is a set of tools that enables on-device machine learning by helping developers run their models on mobile, embedded, and edge devices. Also there is a online tool called [Edge Impulse](https://studio.edgeimpulse.com/studio/270549) for create own light-weight models for embedded systems.
+
 <img src="pictures/tensorflowworkflow.png" width="100%">
-
-   
-                        
-   
-   
-
-   
-   
-
  
+
+ 1. Install tensorflow to the PC - [Clickhere](https://www.tensorflow.org/install/pip#windows-native)
+ 
+ 3. Get models for TensorFlow Lite
+You don't have to build a TensorFlow Lite model to start using machine learning on mobile or edge devices. Many already-built and optimized models are available for you to use right away in your application. You can start with using pre-trained models in TensorFlow Lite and move up to building custom models over time, as follows:
+	+ Start developing machine learning features with already  [trained models.](https://www.tensorflow.org/lite/models/trained)
+	+ Modify existing TensorFlow Lite models using tools such as  [Model Maker](https://www.tensorflow.org/lite/models/modify/model_maker).
+	+ Build a  [custom model](https://www.tensorflow.org/tutorials/customization/custom_training_walkthrough)  with TensorFlow tools and then  [convert](https://www.tensorflow.org/lite/models/convert)  it to TensorFlow Lite.
+4. TensorFlow Lite with microcontrollers. [Tutorial ](https://blog.tensorflow.org/2019/11/how-to-get-started-with-machine.html)
+
+   
+                       
