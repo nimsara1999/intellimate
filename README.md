@@ -39,7 +39,8 @@ This project aims to enhance the capabilities of a small robot with legs control
 ***
 ## 1. Select components & develop the main hardware  structure
 
-<img src="https://github.com/nimsara1999/intellimate/assets/85945422/6844f2b6-1760-45b5-aa61-4c682530f57f" width="50%" >
+ <img src="https://github.com/nimsara1999/intellimate/assets/85945422/bccbfb9f-4c5c-4c32-8d32-0b23a740e854" width="50%" >
+ 
 
    In this step select sensors, actuators, development board and other circuits for the pet_robot by considering their diamentions and compatibility with my application. Next start 3D designing parts using solidworks.
    
@@ -50,7 +51,7 @@ This project aims to enhance the capabilities of a small robot with legs control
  So I select esp32-cam and esp32 development boards. The esp32-cam module has esp32s chip which is single core chip. But the esp32 have two cores. So I can handle these tasks optimally using these 3 cores. 
  I use SPI communication protocol to communicate with each other.
  
-  <img src="https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2018/08/ESP32-DOIT-DEVKIT-V1-Board-Pinout-36-GPIOs-updated.jpg?quality=100&strip=all&ssl=1" width="50%" ><img src="https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2020/03/ESP32-CAM-pinout-new.png?quality=100&strip=all&ssl=1" width="50%" >
+   <img src="https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2018/08/ESP32-DOIT-DEVKIT-V1-Board-Pinout-36-GPIOs-updated.jpg?quality=100&strip=all&ssl=1" width="50%" ><img src="https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2020/03/ESP32-CAM-pinout-new.png?quality=100&strip=all&ssl=1" width="50%" >
  - **Servo motors** - use MG90S micro servos for bottom end bend. Because it
    should handle whole weight of the robot. Also use SG90 servo motors
    for other two ends.
@@ -89,17 +90,18 @@ This project aims to enhance the capabilities of a small robot with legs control
 ***
 
 ## 2.  Develop robot movements, eye reactions and how use tof sensors. 
-There is a library which is match to intellimate robot movements. So we can directly use that library for develop robot movements further more.
+There are 4 servo motors to take robot movements. There is a library which is match to intellimate robot movements. So we can directly use that library for develop robot movements further more.
 
 Use two 128*64 i2c oled displays to design eye reactions. When we use two oled displays, both of have same hardware address. So we need to change hardware address by changing backside resistor. Finally can controll two oled displays using one i2c line.
 
-Instead of the camera, use time of flight sensors to get some idea of the environment. We use four [time of flight sensors](https://www.st.com/en/imaging-and-photonics-solutions/time-of-flight-sensors.html) to detect objects around the robot and four tof sensors (two per foot each) to detect the edges of the living table. 
+Instead of the camera, use time of flight sensors to get some idea of the environment. We use four [time of flight sensors](https://www.st.com/en/imaging-and-photonics-solutions/time-of-flight-sensors.html) to detect objects around the robot and four tof sensors (two per foot each) to detect the edges of the living table. We can't use same addressed TOF sensors in same I2C bus. Because I2C protocol use hardware address of each device. So the solution is to use an I2C 1 to 8 multiplexer for connect 8 tof sensors together.
 
+In the final project we use two i2c buses in the same ESP32 board. Because any pins in esp32 board has I2C capabilities. Only thing is configure that in the code.
 ***
 ## 3. Research and develop image recognition on locally.
-There is a version of tensorflow which is called tensorflow lite. TensorFlow Lite is a set of tools that enables on-device machine learning by helping developers run their models on mobile, embedded, and edge devices. 
+There is a version of tensorflow which is called tensorflow lite. TensorFlow Lite is a set of tools that enables on-device machine learning by helping developers run their models on mobile, embedded, and edge devices. Also there is a online tool called [Edge Impulse](https://studio.edgeimpulse.com/studio/270549) for create own light-weight models for embedded systems.
 
-<img src="pictures/tensorflowworkflow.png" width="90%">
+<img src="pictures/tensorflowworkflow.png" width="100%">
  
 
  1. Install tensorflow to the PC - [Clickhere](https://www.tensorflow.org/install/pip#windows-native)
@@ -109,13 +111,16 @@ You don't have to build a TensorFlow Lite model to start using machine learning 
 	+ Start developing machine learning features with already  [trained models.](https://www.tensorflow.org/lite/models/trained)
 	+ Modify existing TensorFlow Lite models using tools such as  [Model Maker](https://www.tensorflow.org/lite/models/modify/model_maker).
 	+ Build a  [custom model](https://www.tensorflow.org/tutorials/customization/custom_training_walkthrough)  with TensorFlow tools and then  [convert](https://www.tensorflow.org/lite/models/convert)  it to TensorFlow Lite.
-4. TensorFlow Lite with microcontrollers. [Tutorial ](https://blog.tensorflow.org/2019/11/how-to-get-started-with-machine.html)
-
-Also there is a online tool called [Edge Impulse](https://studio.edgeimpulse.com/studio/270549) for create own light-weight models for embedded systems.
-
+4. TensorFlow Lite with microcontrollers using google Colab. [Tutorial ](https://blog.tensorflow.org/2019/11/how-to-get-started-with-machine.html)
 
 **My Example: Test ML model for pen detection on esp32 ai thinker cam module.**
-This model trained using 36 sample pen photos. Then exported as a arduino library and directly used on esp32.
+
+This model trained using 36 sample pen photos. Then exported as a arduino library and directly used on esp32. This example done by without using tensorflow and google colab. Trained ML classifier on locally. [All Steps. ](https://eloquentarduino.com/esp32-cam-image-recognition/https://eloquentarduino.com/esp32-cam-image-recognition/)
+
+Steps:
+1.  collect images from Esp32-cam to create a dataset
+2.  train a Machine Learning classifier on your PC to classify images
+3.  deploy that classifier to your Esp32-cam
 
 https://github.com/nimsara1999/intellimate/assets/85945422/d77be6c5-7691-4bad-ae43-59a713a80e49
 ***
