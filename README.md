@@ -1,68 +1,78 @@
 # intellimate - Small Robot with AI Enhancements for Human Assistance
 
-This project aims to enhance the capabilities of a small robot with legs control using servo motors, OLED displays as eyes to react differently and display informations to the user, a speaker for react to the user as a sound or speak with user, TOF sensors for distance measurements and walk on a table without falling down, camera for object identification, and a microphone for voice input for the various tasks. The enhanced robot will be capable of assisting humans in various tasks using AI technologies such as a voice assistant for control smart home. 
+This project aims to enhance the capabilities of a small robot with legs control using servo motors, OLED displays as eyes to react differently and display informations to the user, a speaker for react to the user as a sound or speak with user, Time Of Flight sensors for distance measurements and walk on a table without falling down, camera for object identification, and a microphone for voice input for the various tasks. The enhanced robot will be capable of assisting humans in various tasks using AI technologies such as a voice assistant for control smart home. 
+
 <img src="https://www.pikpng.com/pngl/b/122-1221795_mini-robot-cartoon-clipart.png" width="20%">
 
-## Functions of the pet_robot.
+## Functions of the intellimate.
 1.  **Object Recognition and Interaction:** The robot uses its camera and TOF sensors to recognize and interact with objects on the table, allowing it to perform tasks.
     
 2.  **Stable Tabletop Mobility:** Equipped with TOF sensors in its legs, the robot moves and navigates the table confidently without falling, ensuring stable mobility and preventing accidents.
     
 3.  **Intuitive OLED Display Eyes:** The two OLED displays serve as expressive eyes, conveying emotions and information to users in an engaging and relatable manner.
     
-4.  **Personalized Face Detection:** The camera identifies faces and greets each individual by name, creating a personalized and welcoming interaction for users and visitors.
+4.  **Personalized Face Detection:** The camera identifies faces and greets each individual by name, creating a personalized and welcoming interaction for users and visitors. (Next step)
     
 5.  **Voice-Activated Conversations:** The built-in microphone captures voice commands, enabling natural and interactive conversations with the robot for tasks, queries, and even companionship.
     
-6.  **Dynamic Object Reaction:** Each identified object triggers a specific reaction from the robot, allowing it to respond differently based on the recognized item, enhancing engagement.
-    
 7.  **AI-Driven Responses:** Utilizing the power of Chat GPT, the robot can provide insightful and comprehensive answers to user queries, enhancing its role as an information resource.
-
     
 9.  **Home Automation Integration:** Seamlessly connects with smart home devices, allowing users to control lights, appliances, and other compatible devices using voice commands.
     
 10.  **Assistance and Convenience:** Performs various tasks, such as setting reminders, providing weather updates, and even assisting with shopping lists, enhancing daily efficiency.
+***
+**Functions that I implement for the semester project.**
+ 1. Walking on the table (don't use TOF sensors in this stage).
+ 2. Follow some voice commands. (Ex. Control a smart bulb)
+ 3. Answering human voice questions using Chatgpt api via speaker.
+ 4. When someone who is not in front of intellimate speaks, intellimate turns and tries to find him using object detection techniques.
+ 5. Bit of eye reactions implement on the oled displays.
 
-There are 6 main steps in the development process.
-1. Develop the main hardware structure.
+ ***
+**There are 6 main steps in the development process.**
+1. Select components and develop the main hardware structure.
 2. Develop robot movements, eye reactions and how use tof sensors. 
-3. Research and develop image recognition on locally.
+3. Research and develop image recognition on locally (esp32 camera).
 4. Research and develop voice recognition.
-5. Combine image and voice recognition on esp32-s3-eye and test.
-6. Combine them all in sync.
+5. Combine them all in sync and manage communications.
 
+***
+## 1. Select components & develop the main hardware  structure
 
-## 1. Develop the main hardware structure
+<img src="https://github.com/nimsara1999/intellimate/assets/85945422/6844f2b6-1760-45b5-aa61-4c682530f57f" width="50%" >
 
    In this step select sensors, actuators, development board and other circuits for the pet_robot by considering their diamentions and compatibility with my application. Next start 3D designing parts using solidworks.
    
 
 **Select components**
-   
- - Development board - I have limited space in the robot body for mount
-   whole sensors motors and othr circuits. So I use ESP32-S3-EYE board.
-   Because it have inbuilt microphone, camera module and display output.
-   Then I no need to manage these things using external bundle of
-   circuits. Also ESP32-S3-EYE have two co-processors, It is based on
-   the ESP32-S3 SoC and ESP-WHO, Espressif’s AI development frameworks.
-   Using each high speed co-processors I can manage robot motions,
-   reactions and AI part smoothly.
-   
- - Servo motors - use MG90S micro servos for bottom end bend. Because it
+
+ - **Development boards** - When the intellimate walk on the table, he has to perform multiple tasks in parallel, such as detecting objects on the table and taking readings from TOF sensors to take the idea of the environment. 
+ So I select esp32-cam and esp32 development boards. The esp32-cam module has esp32s chip which is single core chip. But the esp32 have two cores. So I can handle these tasks optimally using these 3 cores. 
+ I use SPI communication protocol to communicate with each other.
+ 
+  <img src="https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2018/08/ESP32-DOIT-DEVKIT-V1-Board-Pinout-36-GPIOs-updated.jpg?quality=100&strip=all&ssl=1" width="50%" ><img src="https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2020/03/ESP32-CAM-pinout-new.png?quality=100&strip=all&ssl=1" width="50%" >
+ - **Servo motors** - use MG90S micro servos for bottom end bend. Because it
    should handle whole weight of the robot. Also use SG90 servo motors
    for other two ends.
    
- - Display - Now I use two i2c different hardware addressed 128*64 oled displays.
+ - **Display** -  Two i2c different hardware addressed 128*64 oled displays using one I2C lines.
  
- - Distance Sensors - Ultrasonic distance sensors size is very large. So
-   it is not suitable for this. So i use time of flight sensors for this
+ - **Distance Sensors** - Ultrasonic distance sensors size is very large. So
+   it is not suitable for this. So I use time of flight sensors for this
    application which is only 3cm*2cm dimentions.
+    
+    <img src="https://esphome.io/_images/vl53l0x.png" width="20%" >
    
- - Speakers - use speaker amplifire with small type speaker.
+ - **Speakers** - I2S Audio Amplifier with a small size speaker.
+ 
+ - **Microphone** -  INMP441 MEMS  Microphone Module I2S
+ 
+   <img src="https://i0.wp.com/www.techiesms.com/wp-content/uploads/2023/07/INMP441-MEMS-High-Precision-Omnidirectional-Microphone-Module-I2S-4.jpg?fit=800%2C800&ssl=1" width="20%" >
 
-   <img src="https://github.com/espressif/esp-who/blob/master/docs/_static/get-started/ESP32-S3-EYE_MB-annotated-photo.png" width="75%" >
 
+ - **Power** - In this stage not focus on batteries. Mainly need two voltages. 3.3v for esp32 boards and 5v for servo motors.  Use a power module which can step down voltage into 3.3v and 5v.
 
+   
 **Design parts for 3D printing**
 
    Mainly I have design head, body, legs, foot and other small supporting parts using solidworks 2019.
@@ -76,18 +86,20 @@ There are 6 main steps in the development process.
  
  - foot- In the foot, there are two time of flight sensors in each feet.
 
-## 2.  Develop robot movements, eye reactions and how   		use tof sensors. 
+***
+
+## 2.  Develop robot movements, eye reactions and how use tof sensors. 
 There is a library which is match to intellimate robot movements. So we can directly use that library for develop robot movements further more.
 
 Use two 128*64 i2c oled displays to design eye reactions. When we use two oled displays, both of have same hardware address. So we need to change hardware address by changing backside resistor. Finally can controll two oled displays using one i2c line.
 
 Instead of the camera, use time of flight sensors to get some idea of the environment. We use four [time of flight sensors](https://www.st.com/en/imaging-and-photonics-solutions/time-of-flight-sensors.html) to detect objects around the robot and four tof sensors (two per foot each) to detect the edges of the living table. 
 
-
+***
 ## 3. Research and develop image recognition on locally.
-There is a version of tensorflow which is called tensorflow lite. TensorFlow Lite is a set of tools that enables on-device machine learning by helping developers run their models on mobile, embedded, and edge devices. Also there is a online tool called [Edge Impulse](https://studio.edgeimpulse.com/studio/270549) for create own light-weight models for embedded systems.
+There is a version of tensorflow which is called tensorflow lite. TensorFlow Lite is a set of tools that enables on-device machine learning by helping developers run their models on mobile, embedded, and edge devices. 
 
-<img src="pictures/tensorflowworkflow.png" width="100%">
+<img src="pictures/tensorflowworkflow.png" width="90%">
  
 
  1. Install tensorflow to the PC - [Clickhere](https://www.tensorflow.org/install/pip#windows-native)
@@ -99,5 +111,17 @@ You don't have to build a TensorFlow Lite model to start using machine learning 
 	+ Build a  [custom model](https://www.tensorflow.org/tutorials/customization/custom_training_walkthrough)  with TensorFlow tools and then  [convert](https://www.tensorflow.org/lite/models/convert)  it to TensorFlow Lite.
 4. TensorFlow Lite with microcontrollers. [Tutorial ](https://blog.tensorflow.org/2019/11/how-to-get-started-with-machine.html)
 
-   
+Also there is a online tool called [Edge Impulse](https://studio.edgeimpulse.com/studio/270549) for create own light-weight models for embedded systems.
+
+
+**My Example: Test ML model for pen detection on esp32 ai thinker cam module.**
+This model trained using 36 sample pen photos. Then exported as a arduino library and directly used on esp32.
+
+https://github.com/nimsara1999/intellimate/assets/85945422/d77be6c5-7691-4bad-ae43-59a713a80e49
+***
+
+## 4. Research and develop voice recognition.
+
+
+
                        
