@@ -39,19 +39,18 @@ This project aims to enhance the capabilities of a small robot with legs control
 ***
 ## 1. Select components & develop the main hardware  structure
 
- <img src="https://github.com/nimsara1999/intellimate/assets/85945422/bccbfb9f-4c5c-4c32-8d32-0b23a740e854" width="50%" >
- 
-
    In this step select sensors, actuators, development board and other circuits for the pet_robot by considering their diamentions and compatibility with my application. Next start 3D designing parts using solidworks.
    
-
+   <img src="pictures/devices_intellimate.jpeg" width="50%">
+   
 **Select components**
 
  - **Development boards** - When the intellimate walk on the table, he has to perform multiple tasks in parallel, such as detecting objects on the table and taking readings from TOF sensors to take the idea of the environment. 
  So I select esp32-cam and esp32 development boards. The esp32-cam module has esp32s chip which is single core chip. But the esp32 have two cores. So I can handle these tasks optimally using these 3 cores. 
  I use SPI communication protocol to communicate with each other.
  
-   <img src="https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2018/08/ESP32-DOIT-DEVKIT-V1-Board-Pinout-36-GPIOs-updated.jpg?quality=100&strip=all&ssl=1" width="50%" ><img src="https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2020/03/ESP32-CAM-pinout-new.png?quality=100&strip=all&ssl=1" width="50%" >
+   <img src="https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2020/03/ESP32-CAM-pinout-new.png?quality=100&strip=all&ssl=1" width="40%" >
+   <img src="https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2018/08/ESP32-DOIT-DEVKIT-V1-Board-Pinout-36-GPIOs-updated.jpg?quality=100&strip=all&ssl=1" width="40%" >
  - **Servo motors** - use MG90S micro servos for bottom end bend. Because it
    should handle whole weight of the robot. Also use SG90 servo motors
    for other two ends.
@@ -122,11 +121,53 @@ Steps:
 2.  train a Machine Learning classifier on your PC to classify images
 3.  deploy that classifier to your Esp32-cam
 
-https://github.com/nimsara1999/intellimate/assets/85945422/d77be6c5-7691-4bad-ae43-59a713a80e49
+<video width="500px" height="500px" controls="controls"><source src="pictures/pen_detect.mp4" type="video/mp4" /></video>
+
+
 ***
 
 ## 4. Research and develop voice recognition.
 
+**Audio Data Communication in a Digital System.**
 
+Digital systems and its audio data requirements within embedded products have dramatically changed. In order for these devices to communicate audio data with each other a standard protocol is required. One such is I2S protocol. It is a serial bus interface, designed by Philip Semiconductor in February 1986 for digital audio interface between the devices. This article discusses an overview of **[I2S protocol](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2s.html)** its working with applications.
+
+**I2S protocol**
+
+The protocol which is used to transmit digital audio data from one device to another device is known as I2S or Inter-IC Sound protocol. This protocol transmits PCM (pulse-code modulated) audio data from one IC to another within an electronic device. I2S plays a key role in transmitting audio files which are pre-recorded from an MCU to a DAC or amplifier. This protocol can also be utilized to digitize audio using a microphone.
+
+The  **I2S protocol features**  include the following.
+
+-   It has 8 to 32 data bits for each sample.
+-   Tx & Rx FIFO interrupts.
+-   It supports DMA.
+-   16-bit, 32-bit, 48-bit, or 64-bit word select period.
+-   Simultaneous bi-directional audio streaming.
+-   8-bit, 16-bit, and 24-bit sample width.
+-   It has different sample rates.
+-   The data rate is up to 96 kHz through the 64-bit word select period.
+-   Interleaved stereo FIFOs or Independent right & left channel FIFOs
+
+An I2S bus that communicates in standard or TDM mode consists of the following lines:
+
+-   **MCLK:**  Master clock line. It is an optional signal depending on the slave side, mainly used for offering a reference clock to the I2S slave device.
+    
+-   **BCLK:**  Bit clock line. The bit clock for data line.
+    
+-   **WS:**  Word (Slot) select line. It is usually used to identify the vocal tract except PDM mode.
+    
+-   **DIN/DOUT:**  Serial data input/output line. Data will loopback internally if DIN and DOUT are set to a same GPIO. 
+
+An I2S bus that communicates in PDM mode consists of the following lines:
+
+-   **CLK:**  PDM clock line.
+    
+-   **DIN/DOUT:**  Serial data input/output line.
+
+We use MAX98357A amplifier for communication between esp32 and speaker. Also use INMP441 MEMS Microphone Module to take voice input via I2S protocol.
+
+<img src="https://i0.wp.com/www.xtronical.com/wp-content/uploads/2020/08/Circuit2.png?w=590&ssl=1" width="40%" >
+
+<img src="https://uelectronics.com/wp-content/uploads/2022/08/AR3262-INMP441-Modulo-de-Microfono-Omnidireccional-I2S-Diagrama.jpg" width="30%" >
 
                        
