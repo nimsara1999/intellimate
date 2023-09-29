@@ -132,7 +132,7 @@ void setup()
     Serial.begin(115200);
     //comment out the below line to start inference immediately after upload
     while (!Serial);
-    Serial.println("Edge Impulse Inferencing Demo");
+    Serial.println("Demo");
     if (ei_camera_init() == false) {
         ei_printf("Failed to initialize Camera!\r\n");
     }

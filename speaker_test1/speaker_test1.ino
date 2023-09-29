@@ -6,7 +6,7 @@
 
 // Replace with your WiFi credentials
 const char* ssid = "AndroidAP";
-const char* password = "blng3542";
+const char* password = "blng35421";
 
 // gTTS API key
 const char* apiKey = "AIzaSyBdo6G4yRruyWR8K70LqRtSVN9Z3fvwpZg";
