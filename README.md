@@ -31,9 +31,9 @@ This project aims to enhance the capabilities of a small robot with legs control
  ***
 **There are 6 main steps in the development process.**
 1. Select components and develop the main hardware structure.
-2. Develop robot movements, eye reactions and how use tof sensors. 
-3. Research and develop image recognition on locally (esp32 camera).
-4. Research and develop voice recognition.
+2. Develop robot movements, eye reactions and how use tof sensors.
+3. Develop voice recognition.
+4. Develop image recognition (esp32 camera).
 5. Combine them all in sync and manage communications.
 
 ***
@@ -97,42 +97,21 @@ Instead of the camera, use time of flight sensors to get some idea of the enviro
 
 In the final project we use two i2c buses in the same ESP32 board. Because any pins in esp32 board has I2C capabilities. Only thing is configure that in the code.
 ***
-## 3. Research and develop image recognition on locally.
-There is a version of tensorflow which is called tensorflow lite. TensorFlow Lite is a set of tools that enables on-device machine learning by helping developers run their models on mobile, embedded, and edge devices. Also there is a online tool called [Edge Impulse](https://studio.edgeimpulse.com/studio/270549) for create own light-weight models for embedded systems.
 
-<img src="pictures/tensorflowworkflow.png" width="100%">
- 
-
- 1. Install tensorflow to the PC - [Clickhere](https://www.tensorflow.org/install/pip#windows-native)
- 
- 3. Get models for TensorFlow Lite
-You don't have to build a TensorFlow Lite model to start using machine learning on mobile or edge devices. Many already-built and optimized models are available for you to use right away in your application. You can start with using pre-trained models in TensorFlow Lite and move up to building custom models over time, as follows:
-	+ Start developing machine learning features with already  [trained models.](https://www.tensorflow.org/lite/models/trained)
-	+ Modify existing TensorFlow Lite models using tools such as  [Model Maker](https://www.tensorflow.org/lite/models/modify/model_maker).
-	+ Build a  [custom model](https://www.tensorflow.org/tutorials/customization/custom_training_walkthrough)  with TensorFlow tools and then  [convert](https://www.tensorflow.org/lite/models/convert)  it to TensorFlow Lite.
-4. TensorFlow Lite with microcontrollers using google Colab. [Tutorial ](https://blog.tensorflow.org/2019/11/how-to-get-started-with-machine.html)
-
-**My Example: Test ML model for pen detection on esp32 ai thinker cam module.**
-
-This model trained using 36 sample pen photos. Then exported as a arduino library and directly used on esp32. This example done by without using tensorflow and google colab. Trained ML classifier on locally. [All Steps. ](https://eloquentarduino.com/esp32-cam-image-recognition/https://eloquentarduino.com/esp32-cam-image-recognition/)
-
-Steps:
-1.  collect images from Esp32-cam to create a dataset
-2.  train a Machine Learning classifier on your PC to classify images
-3.  deploy that classifier to your Esp32-cam
-
-<video width="500px" height="500px" controls="controls"><source src="pictures/pen_detect.mp4" type="video/mp4" /></video>
+## 3. Research and develop voice recognition.
 
 
-***
+The voice recognition part of the project involves taking voice inputs from the user and processing them to generate answers and emotions. The voice recognition part consists of the following steps:
 
-## 4. Research and develop voice recognition.
+-   **Voice input control:** The ESP32 firmware uses the I2S protocol to receive audio data from the INMP441 microphone. The firmware stores the audio data in a buffer and writes it to the EEPROM memory. The firmware also triggers an interrupt when the buffer is full or when the user stops speaking.
+-   **Voice recording upload control:** The ESP32 firmware uses the HTTP protocol to send a POST request to the backend server with the audio data as the payload. The firmware also sends a unique ID for each voice recording to identify it later.
+-   **Voice to text conversion:** The backend server uses a machine learning model API to convert the audio data into text. The API takes the audio data as an input and returns a JSON response with the text as an output. The backend server parses the JSON response and extracts the text.
+-   **Text to answer generation:** The backend server uses a chatgpt API to generate an answer for the text. The API takes the text as an input and returns a JSON response with the answer as an output. The backend server parses the JSON response and extracts the answer.
+-   **Emotion recognition:** The backend server uses a machine learning model API to recognize the emotion of the user based on the voice recording context. The API takes the voice recording as an input and returns a JSON response with the emotion as an output. The backend server parses the JSON response and extracts the emotion.
+-   **Answer to speech synthesis:** The backend server uses a text-to-speech API to synthesize speech for the answer. The API takes the answer as an input and returns an audio file as an output. The backend server saves the audio file in a temporary folder.
+-   **Sound or speech output control:** The backend server sends a GET request to the ESP32 firmware with the ID of the voice recording, the answer, and the emotion as parameters. The ESP32 firmware uses the ID to match the voice recording with its corresponding answer and emotion. The ESP32 firmware uses the HTTP protocol to download the audio file from the backend server. The ESP32 firmware uses the I2S protocol to send audio data to the MAX98357A amplifier, which drives the speaker. The ESP32 firmware also uses I2C commands to display different expressions on the OLED displays according to the emotion.
 
-**Audio Data Communication in a Digital System.**
-
-Digital systems and its audio data requirements within embedded products have dramatically changed. In order for these devices to communicate audio data with each other a standard protocol is required. One such is I2S protocol. It is a serial bus interface, designed by Philip Semiconductor in February 1986 for digital audio interface between the devices. This article discusses an overview of **[I2S protocol](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/i2s.html)** its working with applications.
-
-**I2S protocol**
+  **I2S protocol**
 
 The protocol which is used to transmit digital audio data from one device to another device is known as I2S or Inter-IC Sound protocol. This protocol transmits PCM (pulse-code modulated) audio data from one IC to another within an electronic device. I2S plays a key role in transmitting audio files which are pre-recorded from an MCU to a DAC or amplifier. This protocol can also be utilized to digitize audio using a microphone.
 
@@ -148,26 +127,6 @@ The  **I2S protocol features**  include the following.
 -   The data rate is up to 96 kHz through the 64-bit word select period.
 -   Interleaved stereo FIFOs or Independent right & left channel FIFOs
 
-An I2S bus that communicates in standard or TDM mode consists of the following lines:
 
--   **MCLK:**  Master clock line. It is an optional signal depending on the slave side, mainly used for offering a reference clock to the I2S slave device.
-    
--   **BCLK:**  Bit clock line. The bit clock for data line.
-    
--   **WS:**  Word (Slot) select line. It is usually used to identify the vocal tract except PDM mode.
-    
--   **DIN/DOUT:**  Serial data input/output line. Data will loopback internally if DIN and DOUT are set to a same GPIO. 
-
-An I2S bus that communicates in PDM mode consists of the following lines:
-
--   **CLK:**  PDM clock line.
-    
--   **DIN/DOUT:**  Serial data input/output line.
-
-We use MAX98357A amplifier for communication between esp32 and speaker. Also use INMP441 MEMS Microphone Module to take voice input via I2S protocol.
-
-<img src="https://i0.wp.com/www.xtronical.com/wp-content/uploads/2020/08/Circuit2.png?w=590&ssl=1" width="40%" >
-
-<img src="https://uelectronics.com/wp-content/uploads/2022/08/AR3262-INMP441-Modulo-de-Microfono-Omnidireccional-I2S-Diagrama.jpg" width="30%" >
 
                        
