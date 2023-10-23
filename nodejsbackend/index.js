@@ -3,7 +3,8 @@ const http = require("http");
 const server = http.createServer();
 const fileName = "./resources/recording.wav";
 const speechToText = require("./speechToText.js");
-const emotionAPI = require("./emotionAPI.js");
+const emotionContextAPI = require("./emotionContextAPI.js");
+var voiceText;
 
 server.on("request", (request, response) => {
   if (request.method == "POST" && request.url === "/uploadAudio") {
@@ -14,12 +15,14 @@ server.on("request", (request, response) => {
 
     request.on("end", async function () {
       recordingFile.end();
-      speechToText(fileName).then((response1) => {
-        console.log(JSON.stringify(response1.text));
-        response.end(JSON.stringify(response1.text));
+
+      await speechToText(fileName).then((response1) => {
+        voiceText = response1.text;
+        console.log(JSON.stringify(voiceText));
+        response.end(JSON.stringify(voiceText));
       });
 
-      emotionAPI(fileName).then((response2) => {
+      emotionContextAPI(voiceText).then((response2) => {
         console.log(JSON.stringify(response2));
         response.end(JSON.stringify(response2));
       });
