@@ -127,6 +127,8 @@ The  **I2S protocol features**  include the following.
 -   The data rate is up to 96 kHz through the 64-bit word select period.
 -   Interleaved stereo FIFOs or Independent right & left channel FIFOs
 
+Voice Management Demonstration.
+https://www.youtube.com/watch?v=EcGdtz8JKoo
 
 
                        
