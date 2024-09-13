@@ -1,3 +1,7 @@
+Voice Management Demonstration.
+https://www.youtube.com/watch?v=EcGdtz8JKoo
+
+
 # intellimate - Small Robot with AI Enhancements for Human Assistance
 
 This project aims to enhance the capabilities of a small robot with legs control using servo motors, OLED displays as eyes to react differently and display informations to the user, a speaker for react to the user as a sound or speak with user, Time Of Flight sensors for distance measurements and walk on a table without falling down, camera for object identification, and a microphone for voice input for the various tasks. The enhanced robot will be capable of assisting humans in various tasks using AI technologies such as a voice assistant for control smart home. 
@@ -127,8 +131,7 @@ The  **I2S protocol features**  include the following.
 -   The data rate is up to 96 kHz through the 64-bit word select period.
 -   Interleaved stereo FIFOs or Independent right & left channel FIFOs
 
-Voice Management Demonstration.
-https://www.youtube.com/watch?v=EcGdtz8JKoo
+
 
 
                        
